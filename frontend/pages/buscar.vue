@@ -72,7 +72,6 @@ export default {
     },
     montaProdutos(products) {
       const produtos = []
-      console.log('urlHostApi' + this.urlHostApi)
       products.forEach((item) => {
         produtos.push({
           name: item?.attributes?.name || '',
@@ -80,6 +79,7 @@ export default {
             ? this.urlHostApi + item.attributes.photo.data[0].attributes.url
             : null,
           price: item.attributes.price,
+          code: item.attributes.code,
           url: item.attributes.url,
         })
       })

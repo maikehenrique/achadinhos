@@ -874,6 +874,7 @@ export interface ApiProductProduct extends Schema.CollectionType {
       'api::category.category'
     >;
     price: Attribute.Float;
+    code: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

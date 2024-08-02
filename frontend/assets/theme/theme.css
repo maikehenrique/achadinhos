@@ -5,10 +5,13 @@
   --primary-hover: #d7bfbd;
   --color-text-primary: #737b97;
   --color-text-secondary: #262626;
-  --background-color: #881cc3 ;
+  --background-color: #ffffff ;
+  --footer-background: #2e2e2e;
+  --footer-text-color: #ffffff;
   --font-family: Lato, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial,
     Lucida Grande, sans-serif;
   --secondary-color-button: #64748b;
+  --secondary-background-color: #9C27B0;
 }
 
 html {

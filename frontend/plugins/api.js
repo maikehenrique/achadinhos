@@ -1,9 +1,15 @@
 const apiFactory = (axios) => ({
   buscarProdutoApi(buscar) {
-    return axios.get('products?populate=*&filters[name][$containsi]=' + buscar)
+    return axios.get(
+      `products?populate=*&filters[$or][0][name][$containsi]=${buscar}&filters[$or][1][code][$containsi]=${buscar}`
+    )
   },
-  buscarProdutoDiaApi() {
-    return axios.get('products?populate=*')
+  buscarProdutoDiaApi(pagination) {
+    return axios.get(
+      'products?populate=*&pagination[page]=' +
+        pagination +
+        '&sort[0]=updatedAt:desc'
+    )
   },
   buscarBannerApi() {
     return axios.get('banner?populate=*')

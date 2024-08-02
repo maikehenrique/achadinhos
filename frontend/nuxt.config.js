@@ -1,7 +1,8 @@
 export default {
   env: {
     apiKey: process.env.API_KEY || null,
-    hostApi: process.env.HOST_API || 'http://localhost:3000',
+    apiKeyHom: process.env.API_KEY_HOM || null,
+    hostApi: process.env.HOST_API || 'http://localhost:3001',
   },
 
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -13,15 +14,9 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'Achadinhos da Internet',
-    htmlAttrs: {
-      lang: 'pt-BR',
-      translate: 'no',
-    },
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', contenct: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       {
         hid: 'og:site_name',
         name: 'og:site_name',
@@ -30,12 +25,13 @@ export default {
       {
         hid: 'og-title',
         name: 'og:title',
-        content: 'Achadinhos da Internet | Description',
+        content:
+          'Achadinhos da Internet | As melhores promoções você encontra aqui!',
       },
       {
         hid: 'og-description',
         name: 'og:description',
-        content: 'Description complete',
+        content: 'As melhores promoções você encontra aqui!',
       },
       {
         hid: 'og:image',
@@ -52,7 +48,7 @@ export default {
   },
 
   server: {
-    port: 8081, // default: 3000
+    port: 3002, // default: 3000
     host: '0.0.0.0', // default: localhost
   },
 
@@ -62,9 +58,7 @@ export default {
     { src: 'primeicons/primeicons.css' },
     { src: 'primeflex/primeflex.css' },
     { src: '@mdi/font/css/materialdesignicons.min.css' },
-    {
-      src: '@/assets/theme.css',
-    },
+    { src: '~/assets/theme/theme' },
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins

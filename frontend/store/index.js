@@ -7,7 +7,11 @@ export const mutations = {
 
 export const getters = {
   urlHostApi: (state) => {
-    return process.env.hostApi
+    if (process.env.NODE_ENV === 'production') {
+      return process.env.hostApi
+    } else {
+      return `http://127.0.0.1:3001`
+    }
   },
 }
 

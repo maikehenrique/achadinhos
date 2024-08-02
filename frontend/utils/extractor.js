@@ -8,7 +8,11 @@ function obtemDominioUrl() {
 
 function obtemBaseUrl() {
   const instancia = obtemDominioUrl()
-  return instancia
+  if (process.env.NODE_ENV === 'production') {
+    return instancia
+  } else {
+    return `http://127.0.0.1:3001`
+  }
 }
 
 export { obtemBaseUrl, obtemBaseUrlApi, obtemDominioUrl }

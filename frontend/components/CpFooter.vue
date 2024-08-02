@@ -56,8 +56,11 @@ export default {
 
 <style>
 .footer {
-  background-color: var(--background-color);
+  background-color: var(--footer-background);
   min-height: 100px;
+  border-top: 5px solid;
+  border-color: var(--secondary-background-color);
+  width: 100%;
 }
 
 .footer__content {
@@ -68,17 +71,17 @@ export default {
 }
 
 .footer__title {
-  color: #d27def;
+  color: var(--footer-text-color);
   font-weight: bold;
 }
 
 .footer__text {
-  color: white;
+  color: var(--footer-text-color);
 }
 
 .footer__icon {
-  color: white;
-  fill: white;
+  color: var(--footer-text-color);
+  fill: var(--footer-text-color);
   filter: invert(1);
   height: 1.6em;
   margin-left: 7px;

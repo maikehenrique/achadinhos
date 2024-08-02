@@ -17,7 +17,7 @@
         </label>
       </div>
 
-      <div class="nav__search">
+      <div class="nav__search md:pl-8">
         <div class="col-12">
           <span class="p-input-icon-right w-full">
             <i
@@ -28,8 +28,9 @@
             <InputText
               v-model="inputBuscar"
               type="text"
-              placeholder="Pesquisar"
+              placeholder="O que está buscando?"
               class="w-full border-round-3xl"
+              style="background-color: #ededed"
               @keyup.enter="buscar"
             />
           </span>
@@ -92,6 +93,7 @@ export default {
   position: relative;
   width: 100%;
   z-index: 100;
+  border-bottom: 1px solid #0000001a;
 }
 
 .nav > .nav__content > .nav__content__logo {
@@ -149,7 +151,7 @@ export default {
 
 @media (max-width: 600px) {
   .nav > .nav__content > .nav__content__logo {
-    width: 100%;
+    width: 100% !important;
   }
 
   .nav > .nav__content > .nav__btn {

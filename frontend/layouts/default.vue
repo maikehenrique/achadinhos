@@ -9,7 +9,7 @@
   </div>
 </template>
 <script>
-import logo from '~/static/logo3.png'
+import logo from '~/static/logo.webp'
 export default {
   name: 'LayoutDefault',
   data() {

@@ -1,5 +1,5 @@
 <template>
-  <div class="content-principal">
+  <div class="content-principal" @scroll="handleScroll">
     <div class="container-content pt-4">
       <div class="container-carousel">
         <Carousel
@@ -7,20 +7,20 @@
           :num-visible="1"
           :num-scroll="1"
           :circular="true"
-          :autoplay-interval="5000"
+          :autoplay-interval="6000"
         >
           <template #item="slotProps">
             <div class="mb-3">
               <img
                 :src="slotProps.data.image"
                 :alt="slotProps.data.name"
-                class="border-round-3xl col-12 image-container"
+                class="border-round-3xl col-12 image-container banner--fade-in"
               />
             </div>
           </template>
         </Carousel>
       </div>
-      <div class="container-achadin-dia">
+      <div class="container-achadin-dia col-12">
         <h2 class="title-categorias pb-2">Achadinhos do dia</h2>
         <div class="produtos-dia flex flex-wrap pb-3">
           <div v-for="(produtos, index) in productsDay" :key="index">
@@ -40,6 +40,10 @@ export default {
     return {
       picturesCarroucel: [],
       productsDay: [],
+      page: 1,
+      pageCount: 1,
+      loading: false,
+      allLoaded: false,
       responsiveOptions: [
         {
           breakpoint: '1024px',
@@ -48,12 +52,12 @@ export default {
         },
         {
           breakpoint: '600px',
-          numVisible: 0,
-          numScroll: 0,
+          numVisible: 1,
+          numScroll: 2,
         },
         {
           breakpoint: '480px',
-          numVisible: 1,
+          numVisible: 2,
           numScroll: 1,
         },
       ],
@@ -66,12 +70,30 @@ export default {
     this.carregaProdutosDia()
     this.carregaBanners()
   },
+  mounted() {},
+  beforeMount() {
+    window.addEventListener('scroll', this.handleScroll)
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
   methods: {
     async carregaProdutosDia() {
+      if (this.loading || this.allLoaded) return
+
+      this.loading = true
       await this.$api
-        .buscarProdutoDiaApi()
+        .buscarProdutoDiaApi(this.page)
         .then((data) => {
           this.montaProdutos(data.data.data)
+          this.montaPaginacao(data.data.meta)
+          this.loading = false
+          setTimeout(() => {
+            const loader = document.querySelectorAll('.product__img')
+            loader.forEach((element) => {
+              element.classList.add('product--fade-in-loaded')
+            })
+          }, 500)
         })
         .catch((error) => {
           const mensagem =
@@ -79,6 +101,7 @@ export default {
               ? error?.response?.data?.error.message
               : error
           this.$messager.Error(this.$translateError(mensagem))
+          this.loading = false
         })
     },
     async carregaBanners() {
@@ -86,6 +109,12 @@ export default {
         .buscarBannerApi()
         .then((data) => {
           this.montaBanner(data.data.data)
+          setTimeout(() => {
+            const loader = document.querySelectorAll('.banner--fade-in')
+            loader.forEach((element) => {
+              element.classList.add('banner--fade-in-loaded')
+            })
+          }, 600)
         })
         .catch((error) => {
           const mensagem =
@@ -102,14 +131,31 @@ export default {
           name: item?.attributes?.name || '',
           img: item?.attributes?.photo?.data
             ? this.urlHostApi +
-              item?.attributes?.photo?.data[0]?.attributes?.url
+              this.montaUrlWebpImage(
+                item?.attributes?.photo?.data[0]?.attributes?.url
+              )
             : null,
           price: item?.attributes?.price || 0,
+          code: item.attributes.code,
           url: item?.attributes?.url,
         })
       })
 
-      this.productsDay = produtos
+      this.productsDay.push(...produtos)
+    },
+    montaPaginacao(paginacao) {
+      this.page = paginacao.pagination.page
+        ? paginacao.pagination.page
+        : this.page
+      this.pageCount = paginacao.pagination.pageCount
+        ? paginacao.pagination.pageCount
+        : this.pageCount
+
+      this.allLoaded = this.page === this.pageCount
+      if (!this.allLoaded) this.page += 1
+    },
+    montaUrlWebpImage(url) {
+      return url.replace('/uploads/', '/uploads/format_webp/')
     },
     montaBanner(banners) {
       const bannersArray = []
@@ -118,7 +164,8 @@ export default {
         banners.attributes.photo.data.forEach((itemBanner) => {
           bannersArray.push({
             image:
-              this.urlHostApi + itemBanner?.attributes?.formats?.large?.url,
+              this.urlHostApi +
+              this.montaUrlWebpImage(itemBanner?.attributes?.url),
             name: itemBanner?.attributes?.name,
           })
         })
@@ -126,14 +173,30 @@ export default {
 
       this.picturesCarroucel = bannersArray
     },
+    handleScroll() {
+      const totalPageHeight = document.body.scrollHeight
+      const scrollPoint = window.scrollY + window.innerHeight
+
+      if (scrollPoint >= totalPageHeight - 500) {
+        this.carregaProdutosDia()
+      }
+    },
   },
 }
 </script>
 
 <style>
+.banner--fade-in-loaded {
+  opacity: 1 !important;
+}
+
+.banner--fade-in {
+  opacity: 0;
+  transition: opacity 1.3s ease-in-out;
+}
+
 .content-principal {
   width: 100%;
-  background-color: #faf5f8;
   min-height: 713px;
 }
 
@@ -154,12 +217,12 @@ export default {
 }
 
 .title-categorias {
-  color: #737b97;
+  color: var(--secondary-background-color);
 }
 
 .image-container {
   max-width: 1200px;
-  max-height: 320px;
+  max-height: 350px;
 }
 
 .p-carousel .p-carousel-content .p-carousel-prev,
@@ -170,15 +233,13 @@ export default {
 .p-carousel .p-carousel-indicators {
   padding: 0px;
   border-radius: -34%;
-  position: absolute;
-  top: 407px;
   width: 100%;
   max-width: 1200px;
 }
 
-@media (max-width: 600px) {
+@media only screen and (max-width: 600px) {
   .container-carousel {
-    display: none;
+    display: none !important;
   }
 }
 </style>
