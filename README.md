@@ -1,8 +1,17 @@
 
 # Achadinhos da Internet
 
+![image](https://github.com/user-attachments/assets/c8b26f30-4ebc-4b8b-a057-2cc21f726bf7)
+
+<div align="center">
+
+  [![Status](https://img.shields.io/badge/status-active-success.svg)]() 
+  [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+
+</div>
 
 > Achadinhos da Internet é um projeto que utiliza um painel de gerenciamento Strapi para cadastrar e gerenciar produtos. O objetivo principal é fornecer links de compra diretos para itens interessantes encontrados online. O projeto facilita a descoberta e compra de produtos de maneira prática e centralizada.
+Você pode acessar em: https://achadinhosdainternet.inovateweb.com.br/
 
 ## 💻 Pré-requisitos
 Antes de começar, verifique se você atendeu aos seguintes requisitos:
