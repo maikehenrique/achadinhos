@@ -58,6 +58,12 @@ export default {
           if (data?.data?.data?.length > 0) {
             this.montaProdutos(data?.data?.data)
             this.productNotFound = false
+            setTimeout(() => {
+              const loader = document.querySelectorAll('.product__img')
+              loader.forEach((element) => {
+                element.classList.add('product--fade-in-loaded')
+              })
+            }, 500)
           } else {
             this.productNotFound = true
           }
