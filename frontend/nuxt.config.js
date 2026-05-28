@@ -1,7 +1,5 @@
 export default {
   env: {
-    apiKey: process.env.API_KEY || null,
-    apiKeyHom: process.env.API_KEY_HOM || null,
     hostApi: process.env.HOST_API || 'http://localhost:3001',
   },
 
@@ -48,7 +46,7 @@ export default {
   },
 
   server: {
-    port: 3002, // default: 3000
+    port: parseInt(process.env.NUXT_PORT) || 3000,
     host: '0.0.0.0', // default: localhost
   },
 

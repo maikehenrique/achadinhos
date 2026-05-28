@@ -1,20 +1,36 @@
 'use strict';
 
 module.exports = {
-  /**
-   * An asynchronous register function that runs before
-   * your application is initialized.
-   *
-   * This gives you an opportunity to extend code.
-   */
   register(/*{ strapi }*/) {},
 
-  /**
-   * An asynchronous bootstrap function that runs before
-   * your application gets started.
-   *
-   * This gives you an opportunity to set up your data model,
-   * run jobs, or perform some special logic.
-   */
-  bootstrap(/*{ strapi }*/) {},
+  async bootstrap({ strapi }) {
+    const publicRole = await strapi
+      .query('plugin::users-permissions.role')
+      .findOne({ where: { type: 'public' } });
+
+    if (!publicRole) return;
+
+    const acoes = [
+      'api::product.product.find',
+      'api::product.product.findOne',
+      'api::banner.banner.find',
+      'api::banner.banner.findOne',
+      'api::category.category.find',
+      'api::category.category.findOne',
+    ];
+
+    for (const action of acoes) {
+      const existing = await strapi
+        .query('plugin::users-permissions.permission')
+        .findOne({ where: { action, role: publicRole.id } });
+
+      if (!existing) {
+        await strapi
+          .query('plugin::users-permissions.permission')
+          .create({ data: { action, role: publicRole.id } });
+      }
+    }
+
+    strapi.log.info('[bootstrap] Permissões públicas configuradas.');
+  },
 };

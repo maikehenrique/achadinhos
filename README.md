@@ -1,72 +1,135 @@
-
 # Achadinhos da Internet
 
+Achadinhos da Internet é um projeto que utiliza um painel de gerenciamento Strapi para cadastrar e gerenciar produtos. O objetivo principal é fornecer links de compra diretos para itens interessantes encontrados online, facilitando a descoberta e compra de produtos de maneira prática e centralizada.
 
-> Achadinhos da Internet é um projeto que utiliza um painel de gerenciamento Strapi para cadastrar e gerenciar produtos. O objetivo principal é fornecer links de compra diretos para itens interessantes encontrados online. O projeto facilita a descoberta e compra de produtos de maneira prática e centralizada.
+## Arquitetura
 
-## 💻 Pré-requisitos
-Antes de começar, verifique se você atendeu aos seguintes requisitos:
+```
+┌─────────────┐     ┌─────────────────┐     ┌──────────────┐
+│   Frontend   │────▶│     Backend      │────▶│  PostgreSQL  │
+│   Nuxt 2     │     │   Strapi v4      │     │              │
+│  porta 3002  │     │   porta 3001     │     │  porta 5432  │
+└─────────────┘     └─────────────────┘     └──────────────┘
+```
 
-- NodeJs v20.8.0+
-- Postgresql 14+
+- **Frontend**: Nuxt 2 (SPA) — Interface pública para visualização dos produtos
+- **Backend**: Strapi v4 — CMS headless para gerenciamento de conteúdo
+- **Banco de dados**: PostgreSQL 14 — Armazenamento de dados
 
-## 🚀 Instalando Achadinhos da Internet
+## Pré-requisitos
 
-Para instalar o projeto, siga estas etapas:
-- Use NodeJs como gerenciador de pacote [npm](https://www.npmjs.com/) para instalar as dependências no frontend e backend.
+### Com Docker (recomendado)
+- [Docker](https://docs.docker.com/get-docker/) e Docker Compose
+
+### Instalação local
+- Node.js v18 ou v20 (v21+ não suportado)
+- PostgreSQL 14+
+
+## Instalação com Docker
+
+1. Clone o repositório e copie o arquivo de variáveis de ambiente:
 
 ```bash
-npm  install
+cp .env.example .env
 ```
 
-- Backend
-Altere o arquivo .env.example para .env e ajustes os parâmetros conforme a necessidade, após ajustar crie um banco de dados postgresql com mesmo nome informado no arquivo .env
+2. Edite o arquivo `.env` e configure os secrets (APP_KEYS, JWT_SECRET, etc.) com valores seguros.
 
-## ☕ Usando Achadinhos da Internet
+3. Suba os containers:
 
-Para usar o projeto, siga estas etapas:
-
-- Backend
-
-```
-npm run develop
+```bash
+make docker-up
 ```
 
-Após o projeto executar o mesmo pode ser acessado em: http://localhost:3001/admin
-Na primeira execução será criado o usuário, após criar o usuário será necessário criar um token para comunicação do frontend, disponível no menu Settings > Api Token > Create new Api Token, após gerar o token basta informar no arquivo .env do frontend em API_KEY_HOM
+4. Acesse o painel admin do Strapi em `http://localhost:3001/admin` e crie o usuário administrador.
 
-- Frontend
+5. O frontend estará disponível em `http://localhost:3002`.
+
+## Instalação Local
+
+1. Crie um banco de dados PostgreSQL:
+
+```sql
+CREATE DATABASE strapicms_db;
 ```
-npm run dev
+
+2. Copie e configure o arquivo de ambiente:
+
+```bash
+cp .env.example .env
 ```
 
-Após executado o mesmo pode ser acessoado em: http://localhost:3002/
+3. Instale as dependências:
 
-Adicione comandos de execução e exemplos que você acha que os usuários acharão úteis. Forneça uma referência de opções para pontos de bônus!
+```bash
+make install
+```
 
-## 📫 Contribuindo
+4. Inicie o backend e frontend (em terminais separados):
 
-Para contribuir, siga estas etapas:
+```bash
+make dev-backend
+make dev-frontend
+```
 
-1. Bifurque este repositório.
-2. Crie um branch: `git checkout -b <nome_branch>`.
+5. Acesse `http://localhost:3001/admin` para configurar o Strapi.
+
+## Configuração
+
+| Variável | Descrição | Valor padrão |
+|---|---|---|
+| `DATABASE_HOST` | Host do banco de dados | `localhost` |
+| `DATABASE_PORT` | Porta do banco de dados | `5432` |
+| `DATABASE_NAME` | Nome do banco de dados | `strapicms_db` |
+| `DATABASE_USERNAME` | Usuário do banco de dados | `postgres` |
+| `DATABASE_PASSWORD` | Senha do banco de dados | `postgres` |
+| `APP_KEYS` | Chaves da aplicação Strapi | — |
+| `API_TOKEN_SALT` | Salt para tokens de API | — |
+| `ADMIN_JWT_SECRET` | Secret do JWT admin | — |
+| `TRANSFER_TOKEN_SALT` | Salt para tokens de transferência | — |
+| `JWT_SECRET` | Secret do JWT | — |
+| `HOST_API` | URL do backend | `http://localhost:3001` |
+
+## Uso
+
+1. Acesse o painel admin do Strapi em `http://localhost:3001/admin`
+2. Na primeira execução, crie o usuário administrador
+3. Publique o conteúdo do **banner** (obrigatório para a API retornar dados)
+4. Acesse o frontend em `http://localhost:3002`
+
+## Comandos disponíveis
+
+| Comando | Descrição |
+|---|---|
+| `make help` | Mostra todos os comandos disponíveis |
+| `make docker-up` | Sobe todos os containers (build + start) |
+| `make docker-down` | Para e remove todos os containers |
+| `make docker-reset` | Remove volumes e recria todos os containers |
+| `make docker-build` | Faz build das imagens sem iniciar |
+| `make docker-logs` | Mostra logs de todos os containers |
+| `make docker-logs-backend` | Mostra logs do backend |
+| `make docker-logs-frontend` | Mostra logs do frontend |
+| `make docker-status` | Mostra status dos containers |
+| `make install` | Instala dependências do backend e frontend |
+| `make dev-backend` | Inicia o backend em modo desenvolvimento |
+| `make dev-frontend` | Inicia o frontend em modo desenvolvimento |
+
+## Contribuindo
+
+1. Faça um fork deste repositório
+2. Crie um branch: `git checkout -b <nome_branch>`
 3. Faça suas alterações e confirme-as: `git commit -m '<mensagem_commit>'`
-4. Envie para o branch original: `git push origin <nome_do_projeto> / <local>`
-5. Crie a solicitação de pull.
+4. Envie para o branch original: `git push origin <nome_branch>`
+5. Crie a solicitação de pull
 
-Como alternativa, consulte a documentação do GitHub em [como criar uma solicitação pull](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
+Consulte a documentação do GitHub sobre [como criar uma solicitação pull](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
-## License
+## Licença
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
-  
-<h3  align="left">Connect with me:</h3>
+## Contato
 
-<p  align="left">
-<a  href="https://www.linkedin.com/in/maikehenrique/"  target="blank"><img  align="center"  src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg"  alt="https://www.linkedin.com/in/maikehenrique/"  height="30"  width="40"  /></a>
-
-</p>
-
-<h3 align="left">Languages and Tools:</h3>
-<p align="left"><a  href="https://nodejs.org"  target="_blank"  rel="noreferrer">  <img  src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg"  alt="nodejs"  width="40"  height="40"/>  </a><a href="https://www.postgresql.org"  target="_blank"  rel="noreferrer">  <img  src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original-wordmark.svg"  alt="postgresql"  width="40"  height="40"/>  </a> </p>
+<a href="https://www.linkedin.com/in/maikehenrique/" target="_blank">
+  <img src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="LinkedIn" height="30" width="40" />
+</a>
