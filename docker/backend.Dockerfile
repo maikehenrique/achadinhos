@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:18-bookworm-slim AS build
+FROM node:20-bookworm-slim AS build
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -16,7 +16,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Production
-FROM node:18-bookworm-slim
+FROM node:20-bookworm-slim
 
 RUN apt-get update && apt-get install -y \
     libvips \

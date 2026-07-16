@@ -1,4 +1,4 @@
-.PHONY: help docker-up docker-down docker-reset docker-logs docker-logs-backend docker-logs-frontend docker-status docker-build install dev-backend dev-frontend
+.PHONY: help docker-up docker-down docker-reset docker-reset-backend docker-reset-frontend docker-mount docker-logs docker-logs-backend docker-logs-frontend docker-status docker-build install dev dev-backend dev-frontend
 
 COMPOSE_FILE := docker/docker-compose.yml
 ENV_FILE := .env
@@ -16,6 +16,17 @@ docker-reset: ## Remove volumes e recria todos os containers
 	docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) down -v
 	docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) up -d --build --wait db backend
 	docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) up -d --build frontend
+
+docker-reset-backend: ## Reconstrói e reinicia apenas o container do backend (preserva dados)
+	docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) up -d --build --wait backend
+
+docker-reset-frontend: ## Reconstrói e reinicia apenas o container do frontend (preserva dados)
+	docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) up -d --build frontend
+
+docker-mount: ## Sobe containers usando cache (builda imagens apenas se não existirem)
+	@docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) down -v --remove-orphans
+	@docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) up -d
+	@echo "Docker has been mounted"
 
 docker-build: ## Faz build das imagens sem iniciar os containers
 	docker compose -f $(COMPOSE_FILE) --env-file $(ENV_FILE) build
@@ -35,6 +46,9 @@ docker-status: ## Mostra status dos containers
 install: ## Instala dependências do backend e frontend
 	cd backend && npm install
 	cd frontend && npm install
+
+dev: ## Inicia backend e frontend juntos em modo desenvolvimento
+	$(MAKE) -j2 dev-backend dev-frontend
 
 dev-backend: ## Inicia o backend em modo desenvolvimento
 	cd backend && npm run develop
